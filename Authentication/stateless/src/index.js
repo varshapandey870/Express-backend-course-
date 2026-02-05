@@ -1,17 +1,29 @@
-import express from "express" ;
+import express from "express";
+import mongoose from "mongoose";
 import dotenv from "dotenv";
 
-dotenv.config();
+import authRoutes from "./routes/auth.routes.js"
+import privateRoutes from "./routes/private.routes.js"
 
+dotenv.config()
+const PORT = process.env.PORT || 5000
 const app = express();
-
-//middlewares
-app.use(express.json());
+app.use(express.json())
 
 
-const PORT = process.env.PORT ||3000;
+// connect mongodb
+mongoose.connect(process.env.MONGO_URI).then(()=>console.log("Mongodb connected"))
+.catch((err)=>console.log("Mongodb connection error" , err.message))
 
 
-app.listen(PORT , () => {
-    console.log(`server is running at http://localhost:${PORT}....`);
-});
+// Routes
+
+app.use("/auth" , authRoutes);
+app.use("/private" , privateRoutes)
+
+app.listen(PORT , ()=>{
+    console.log(`Server is running at port no http://localhost:${PORT}`)
+})
+
+// authentication routes ( SIGNUP AND LOGIN)
+// PRIVATE ROUTES ( JWT ( AUTHENTICATE))
